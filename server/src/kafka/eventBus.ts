@@ -9,11 +9,12 @@ import type {
   RouteClearedEvent,
 } from "@shared/types";
 
-import {
+// Used only as type-level keys in EventByTopic below.
+import type {
   TOPIC_VEHICLE_TELEMETRY,
   TOPIC_ROUTE_ASSIGNED,
   TOPIC_ROUTE_CLEARED,
-  type Topic,
+  Topic,
 } from "@server/kafka/topics";
 
 const MAX_LISTENERS = 50;
