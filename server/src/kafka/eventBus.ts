@@ -2,17 +2,19 @@
 // Producers publish to a topic; Consumers subscribe (no external broker).
 
 import { EventEmitter } from "node:events";
-import type { Topic } from "./topics.js";
+
 import type {
   TelemetryEvent,
   RouteAssignmentEvent,
   RouteClearedEvent,
-} from "../../../shared/types.js";
+} from "@shared/types";
+
 import {
   TOPIC_VEHICLE_TELEMETRY,
   TOPIC_ROUTE_ASSIGNED,
   TOPIC_ROUTE_CLEARED,
-} from "./topics.js";
+  type Topic,
+} from "@server/kafka/topics";
 
 const MAX_LISTENERS = 50;
 
@@ -38,6 +40,7 @@ class EventBus {
     handler: (event: EventByTopic[T]) => void,
   ): () => void {
     this.emitter.on(topic, handler as (e: unknown) => void);
+
     return () => this.emitter.off(topic, handler as (e: unknown) => void);
   }
 }

@@ -1,7 +1,7 @@
 // In-memory source of truth for vehicle state.
 // Read-only from the outside; the consumer is the only writer.
 
-import type { Vehicle } from "../../../shared/types.js";
+import type { Vehicle } from "@shared/types";
 
 class VehicleStore {
   private vehicles = new Map<string, Vehicle>();
@@ -10,8 +10,8 @@ class VehicleStore {
     this.vehicles.set(vehicle.id, vehicle);
   }
 
-  get(id: string): Vehicle | undefined {
-    return this.vehicles.get(id);
+  get(vehicleId: string): Vehicle | undefined {
+    return this.vehicles.get(vehicleId);
   }
 
   all(): Vehicle[] {
