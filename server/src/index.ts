@@ -8,7 +8,7 @@ import { VEHICLE_STATUS } from "@shared/types";
 
 import { PORT, WS_PATH } from "@server/constants";
 import { startConsumer } from "@server/kafka/consumer";
-import { startSimulator, activeRouteCount } from "@server/domain/simulator";
+import { startSimulator, visibleRouteCount, hiddenRouteCount } from "@server/domain/simulator";
 import { vehicleStore } from "@server/domain/vehicleStore";
 import { routeStore } from "@server/domain/routeStore";
 import { attachWebSocketServer } from "@server/ws/broadcaster";
@@ -38,9 +38,12 @@ setInterval(() => {
   const enRouteCount = vehicles.filter(
     (vehicle) => vehicle.status === VEHICLE_STATUS.EN_ROUTE,
   ).length;
+  const withCustomerCount = vehicles.filter(
+    (vehicle) => vehicle.status === VEHICLE_STATUS.WITH_CUSTOMER,
+  ).length;
 
   console.log(
-    `[STORE] vehicles=${vehicleStore.size()} enRoute=${enRouteCount} routes=${routeStore.size()} (sim:${activeRouteCount()})`,
+    `[STORE] vehicles=${vehicleStore.size()} enRoute=${enRouteCount} withCustomer=${withCustomerCount} routes=${routeStore.size()} (sim visible=${visibleRouteCount()} hidden=${hiddenRouteCount()})`,
   );
 }, HEARTBEAT_INTERVAL_MS);
 
