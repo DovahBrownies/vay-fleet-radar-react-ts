@@ -1,5 +1,7 @@
+import type { ReactElement } from "react";
 import { VEHICLE_STATUS } from "@shared/types";
 
+import { FleetMap } from "@app/components/FleetMap";
 import { CONNECTION_STATUS, type ConnectionStatus, useFleetStore } from "@app/store/fleetStore";
 
 import {
@@ -24,7 +26,7 @@ const CONNECTION_LABELS: Record<ConnectionStatus, string> = {
 
 const NO_SERVER_TIME_PLACEHOLDER = "-";
 
-export function FleetRadarPage(): React.ReactElement {
+export function FleetRadarPage(): ReactElement {
   const connection = useFleetStore((state) => state.connection);
   const serverTimeMs = useFleetStore((state) => state.serverTimeMs);
   const vehiclesById = useFleetStore((state) => state.vehiclesById);
@@ -57,6 +59,7 @@ export function FleetRadarPage(): React.ReactElement {
       </TopBar>
 
       <MapStage>
+        <FleetMap />
         <DebugPanel>
           <DebugRow>
             <DebugPair>

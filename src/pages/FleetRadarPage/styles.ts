@@ -3,10 +3,14 @@
 import styled from "styled-components";
 
 import { CONNECTION_STATUS, type ConnectionStatus } from "@app/store/fleetStore";
+import {
+  CONNECTION_STATUS_COLORS,
+  SHADOW_COLORS,
+  SURFACE_COLORS,
+  TEXT_COLORS,
+} from "@app/styles/colors";
 
 const TOP_BAR_HEIGHT_REM = 3.5;
-const TOP_BAR_BG = "#1f2330";
-const TOP_BAR_FG = "#f0f2f7";
 const TOP_BAR_PADDING_X_REM = 1.5;
 const TITLE_FONT_SIZE_REM = 1.125;
 const TITLE_LETTER_SPACING_REM = 0.03125;
@@ -15,11 +19,10 @@ const STATUS_GROUP_FONT_SIZE_REM = 0.8125;
 const STATUS_DOT_SIZE_REM = 0.625;
 const STATUS_DOT_GAP_REM = 0.5;
 const STATUS_DOT_COLOR: Record<ConnectionStatus, string> = {
-  [CONNECTION_STATUS.CONNECTED]: "#3ddc84",
-  [CONNECTION_STATUS.CONNECTING]: "#ffb547",
-  [CONNECTION_STATUS.DISCONNECTED]: "#e53935",
+  [CONNECTION_STATUS.CONNECTED]: CONNECTION_STATUS_COLORS.CONNECTED,
+  [CONNECTION_STATUS.CONNECTING]: CONNECTION_STATUS_COLORS.CONNECTING,
+  [CONNECTION_STATUS.DISCONNECTED]: CONNECTION_STATUS_COLORS.DISCONNECTED,
 };
-const MAP_BG = "#dde3ec";
 const DEBUG_PANEL_OFFSET_REM = 1.5;
 const DEBUG_PANEL_PADDING_Y_REM = 1;
 const DEBUG_PANEL_PADDING_X_REM = 1.25;
@@ -39,8 +42,8 @@ export const PageContainer = styled.div`
 
 export const TopBar = styled.header`
   height: ${TOP_BAR_HEIGHT_REM}rem;
-  background: ${TOP_BAR_BG};
-  color: ${TOP_BAR_FG};
+  background: ${SURFACE_COLORS.TOP_BAR};
+  color: ${TEXT_COLORS.ON_DARK};
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -78,7 +81,7 @@ export const ConnectionPill = styled.span<{ $status: ConnectionStatus }>`
 
 export const MapStage = styled.main`
   flex: 1;
-  background: ${MAP_BG};
+  background: ${SURFACE_COLORS.MAP_PLACEHOLDER};
   position: relative;
   overflow: hidden;
 `;
@@ -88,11 +91,12 @@ export const DebugPanel = styled.div`
   top: ${DEBUG_PANEL_OFFSET_REM}rem;
   left: ${DEBUG_PANEL_OFFSET_REM}rem;
   padding: ${DEBUG_PANEL_PADDING_Y_REM}rem ${DEBUG_PANEL_PADDING_X_REM}rem;
-  background: rgba(255, 255, 255, 0.92);
+  background: ${SURFACE_COLORS.PANEL_TRANSLUCENT};
   border-radius: ${DEBUG_PANEL_RADIUS_REM}rem;
   font-size: ${DEBUG_PANEL_FONT_SIZE_REM}rem;
   font-family: ui-monospace, Consolas, monospace;
-  box-shadow: 0 ${DEBUG_PANEL_SHADOW_OFFSET_Y_REM}rem ${DEBUG_PANEL_SHADOW_BLUR_REM}rem rgba(0, 0, 0, 0.12);
+  box-shadow: 0 ${DEBUG_PANEL_SHADOW_OFFSET_Y_REM}rem ${DEBUG_PANEL_SHADOW_BLUR_REM}rem
+    ${SHADOW_COLORS.PANEL};
   line-height: 1.6;
 `;
 
@@ -103,16 +107,15 @@ export const DebugRow = styled.div`
 `;
 
 export const DebugPair = styled.span`
+  color: ${TEXT_COLORS.MUTED};
   display: inline-flex;
   align-items: baseline;
 `;
 
 export const DebugLabel = styled.span`
-  color: #5a6072;
   margin-right: ${DEBUG_LABEL_GAP_REM}rem;
 `;
 
 export const DebugValue = styled.span`
-  color: #1a1f2c;
   font-weight: 600;
 `;
