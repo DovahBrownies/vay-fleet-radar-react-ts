@@ -21,7 +21,7 @@ export function startConsumer(): () => void {
       heading: telemetryEvent.heading,
       battery: telemetryEvent.battery,
       status: telemetryEvent.status,
-      // Preserve routeId — telemetry never owns route lifecycle.
+      // Preserve routeId - telemetry never owns route lifecycle.
       routeId: existingVehicle?.routeId ?? null,
       updatedAt: telemetryEvent.timestamp,
     });

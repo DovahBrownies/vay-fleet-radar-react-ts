@@ -1,5 +1,4 @@
-// WebSocket broadcaster: snapshots on connect, batched telemetry broadcasts on a timer,
-// and immediate forwarding for route lifecycle events.
+// WebSocket broadcaster: snapshots on connect, batched telemetry broadcasts on a timer, and immediate forwarding for route lifecycle events.
 
 import type { Server as HttpServer } from "node:http";
 import { WebSocketServer, WebSocket } from "ws";
@@ -16,8 +15,7 @@ import {
 import { vehicleStore } from "@server/domain/vehicleStore";
 import { routeStore } from "@server/domain/routeStore";
 
-// Per-vehicle buffer: each new telemetry event overwrites the previous one
-// for that vehicleId, so a flush always sends the latest known state.
+// Per-vehicle buffer: each new telemetry event overwrites the previous one for that `vehicleId`, so a flush always sends the latest known state.
 const telemetryBuffer = new Map<string, TelemetryEvent>();
 
 function sendTo(client: WebSocket, message: WSMessage): void {
@@ -69,7 +67,7 @@ export function attachWebSocketServer(httpServer: HttpServer): () => void {
     telemetryBuffer.set(telemetryEvent.vehicleId, telemetryEvent);
   });
 
-  // Route lifecycle events are rare — forward each one immediately.
+  // Route lifecycle events are rare - Forward each one immediately.
   const unsubscribeRouteAssigned = eventBus.subscribe(TOPIC_ROUTE_ASSIGNED, (routeAssignedEvent) => {
     broadcast(webSocketServer, {
       type: WS_MESSAGE_TYPE.ROUTE_ASSIGNED,
