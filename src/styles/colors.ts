@@ -32,3 +32,8 @@ export const CONNECTION_STATUS_COLORS = {
 export const SHADOW_COLORS = {
   PANEL: "rgba(0, 0, 0, 0.12)",
 } as const;
+
+export const MARKER_COLORS = {
+  STROKE: "#ffffff",
+  ARROW: "#ffffff",
+} as const;

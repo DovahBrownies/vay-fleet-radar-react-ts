@@ -2,6 +2,7 @@ import type { ReactElement } from "react";
 import { VEHICLE_STATUS } from "@shared/types";
 
 import { FleetMap } from "@app/components/FleetMap";
+import { VehicleMarkers } from "@app/components/VehicleMarkers";
 import { CONNECTION_STATUS, type ConnectionStatus, useFleetStore } from "@app/store/fleetStore";
 
 import {
@@ -59,7 +60,9 @@ export function FleetRadarPage(): ReactElement {
       </TopBar>
 
       <MapStage>
-        <FleetMap />
+        <FleetMap>
+          <VehicleMarkers />
+        </FleetMap>
         <DebugPanel>
           <DebugRow>
             <DebugPair>

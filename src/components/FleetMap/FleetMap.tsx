@@ -1,4 +1,4 @@
-import type { ReactElement } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { Map } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
 
@@ -13,7 +13,11 @@ import { MapContainer } from "./styles";
 
 const MAP_FILL_STYLE = { width: "100%", height: "100%" };
 
-export function FleetMap(): ReactElement {
+interface FleetMapProps {
+  children?: ReactNode;
+}
+
+export function FleetMap({ children }: FleetMapProps): ReactElement {
   return (
     <MapContainer>
       <Map
@@ -24,7 +28,9 @@ export function FleetMap(): ReactElement {
         }}
         mapStyle={MAP_STYLE_URL}
         style={MAP_FILL_STYLE}
-      />
+      >
+        {children}
+      </Map>
     </MapContainer>
   );
 }
