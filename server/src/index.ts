@@ -1,4 +1,6 @@
-// Server entrypoint: HTTP + (eventually) WS, plus the simulated event pipeline.
+// Server entrypoint: HTTP + WS attached to the same server + The simulated event pipeline.
+
+import { createServer } from "node:http";
 
 import express from "express";
 
@@ -9,6 +11,7 @@ import { startConsumer } from "@server/kafka/consumer";
 import { startSimulator, activeRouteCount } from "@server/domain/simulator";
 import { vehicleStore } from "@server/domain/vehicleStore";
 import { routeStore } from "@server/domain/routeStore";
+import { attachWebSocketServer } from "@server/ws/broadcaster";
 
 const HEARTBEAT_INTERVAL_MS = 5000;
 
@@ -27,16 +30,21 @@ app.get("/health", (_req, res) => {
 startConsumer();
 startSimulator();
 
+const httpServer = createServer(app);
+attachWebSocketServer(httpServer);
+
 setInterval(() => {
   const vehicles = vehicleStore.all();
-  const enRouteCount = vehicles.filter((vehicle) => vehicle.status === VEHICLE_STATUS.EN_ROUTE).length;
+  const enRouteCount = vehicles.filter(
+    (vehicle) => vehicle.status === VEHICLE_STATUS.EN_ROUTE,
+  ).length;
 
   console.log(
     `[STORE] vehicles=${vehicleStore.size()} enRoute=${enRouteCount} routes=${routeStore.size()} (sim:${activeRouteCount()})`,
   );
 }, HEARTBEAT_INTERVAL_MS);
 
-app.listen(PORT, () => {
-  console.log(`[SERVER] Listening on http://localhost:${PORT}`);
-  console.log(`[SERVER] WebSocket path: ${WS_PATH} (not yet wired)`);
+httpServer.listen(PORT, () => {
+  console.log(`[SERVER] HTTP listening on http://localhost:${PORT}`);
+  console.log(`[SERVER] WebSocket listening on ws://localhost:${PORT}${WS_PATH}`);
 });

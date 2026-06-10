@@ -60,8 +60,22 @@ export interface RouteClearedEvent {
 // - TELEMETRY_BATCH:  per-broadcast-tick deltas
 // - ROUTE_ASSIGNED / ROUTE_CLEARED: route lifecycle, forwarded immediately
 
+export const WS_MESSAGE_TYPE = {
+  SNAPSHOT: "SNAPSHOT",
+  TELEMETRY_BATCH: "TELEMETRY_BATCH",
+  ROUTE_ASSIGNED: "ROUTE_ASSIGNED",
+  ROUTE_CLEARED: "ROUTE_CLEARED",
+} as const;
+
+export type WSMessageType = (typeof WS_MESSAGE_TYPE)[keyof typeof WS_MESSAGE_TYPE];
+
 export type WSMessage =
-  | { type: "SNAPSHOT"; vehicles: Vehicle[]; routes: Route[]; serverTime: number }
-  | { type: "TELEMETRY_BATCH"; updates: TelemetryEvent[] }
-  | { type: "ROUTE_ASSIGNED"; route: Route }
-  | { type: "ROUTE_CLEARED"; vehicleId: string; routeId: string };
+  | {
+      type: typeof WS_MESSAGE_TYPE.SNAPSHOT;
+      vehicles: Vehicle[];
+      routes: Route[];
+      serverTime: number;
+    }
+  | { type: typeof WS_MESSAGE_TYPE.TELEMETRY_BATCH; updates: TelemetryEvent[] }
+  | { type: typeof WS_MESSAGE_TYPE.ROUTE_ASSIGNED; route: Route }
+  | { type: typeof WS_MESSAGE_TYPE.ROUTE_CLEARED; vehicleId: string; routeId: string };
