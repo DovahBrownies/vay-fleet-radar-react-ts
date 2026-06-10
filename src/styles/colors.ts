@@ -37,3 +37,9 @@ export const MARKER_COLORS = {
   STROKE: "#ffffff",
   ARROW: "#ffffff",
 } as const;
+
+export const BATTERY_COLORS = {
+  OK: "#2e7d32",
+  LOW: "#ef6c00",
+  CRITICAL: "#e53935",
+} as const;

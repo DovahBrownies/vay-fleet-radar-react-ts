@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, type ReactElement } from "react";
 import type { FeatureCollection, Point } from "geojson";
+import type { MapLayerMouseEvent } from "maplibre-gl";
 import { Layer, Source, useMap } from "react-map-gl/maplibre";
 
 import { VEHICLE_STATUS, type Vehicle } from "@shared/types";
@@ -8,7 +9,9 @@ import { useFleetStore } from "@app/store/fleetStore";
 import { MARKER_COLORS, VEHICLE_STATUS_COLORS } from "@app/styles/colors";
 
 const VEHICLE_BODY_RADIUS = 6;
+const VEHICLE_BODY_RADIUS_SELECTED = 10;
 const VEHICLE_BODY_STROKE_WIDTH = 1.5;
+const VEHICLE_BODY_STROKE_WIDTH_SELECTED = 3;
 const ARROW_ICON_SIZE = 16;
 const ARROW_ICON_SCALE = 0.85;
 
@@ -22,10 +25,12 @@ interface VehicleFeatureProperties {
   status: Vehicle["status"];
   heading: number;
   battery: number;
+  selected: boolean;
 }
 
 function buildFeatureCollection(
   vehiclesById: Record<string, Vehicle>,
+  selectedVehicleId: string | null,
 ): FeatureCollection<Point, VehicleFeatureProperties> {
   return {
     type: "FeatureCollection",
@@ -38,6 +43,7 @@ function buildFeatureCollection(
         status: vehicle.status,
         heading: vehicle.heading,
         battery: vehicle.battery,
+        selected: vehicle.id === selectedVehicleId,
       },
     })),
   };
@@ -75,6 +81,8 @@ function makeArrowImageData(sizePx: number): ImageData {
 export function VehicleMarkers(): ReactElement | null {
   const { current: mapRef } = useMap();
   const vehiclesById = useFleetStore((state) => state.vehiclesById);
+  const selectedVehicleId = useFleetStore((state) => state.selectedVehicleId);
+  const selectVehicle = useFleetStore((state) => state.selectVehicle);
   const [iconReady, setIconReady] = useState(false);
 
   // Register the arrow icon once, after the style is ready. Kept alive for the
@@ -99,9 +107,48 @@ export function VehicleMarkers(): ReactElement | null {
     }
   }, [mapRef]);
 
+  // Click + hover handlers. Clicking a vehicle selects it; clicking off any
+  // vehicle clears the selection. Cursor flips to pointer over markers.
+  useEffect(() => {
+    if (!mapRef) return;
+
+    const map = mapRef.getMap();
+
+    function handleClick(event: MapLayerMouseEvent): void {
+      const features = map.queryRenderedFeatures(event.point, {
+        layers: [VEHICLE_BODY_LAYER_ID],
+      });
+
+      if (features.length > 0) {
+        const clickedId = features[0].properties?.id as string | undefined;
+        selectVehicle(clickedId ?? null);
+      } else {
+        selectVehicle(null);
+      }
+    }
+
+    function handleMouseEnter(): void {
+      map.getCanvas().style.cursor = "pointer";
+    }
+
+    function handleMouseLeave(): void {
+      map.getCanvas().style.cursor = "";
+    }
+
+    map.on("click", handleClick);
+    map.on("mouseenter", VEHICLE_BODY_LAYER_ID, handleMouseEnter);
+    map.on("mouseleave", VEHICLE_BODY_LAYER_ID, handleMouseLeave);
+
+    return () => {
+      map.off("click", handleClick);
+      map.off("mouseenter", VEHICLE_BODY_LAYER_ID, handleMouseEnter);
+      map.off("mouseleave", VEHICLE_BODY_LAYER_ID, handleMouseLeave);
+    };
+  }, [mapRef, selectVehicle]);
+
   const featureCollection = useMemo(
-    () => buildFeatureCollection(vehiclesById),
-    [vehiclesById],
+    () => buildFeatureCollection(vehiclesById, selectedVehicleId),
+    [vehiclesById, selectedVehicleId],
   );
 
   if (featureCollection.features.length === 0) return null;
@@ -112,7 +159,12 @@ export function VehicleMarkers(): ReactElement | null {
         id={VEHICLE_BODY_LAYER_ID}
         type="circle"
         paint={{
-          "circle-radius": VEHICLE_BODY_RADIUS,
+          "circle-radius": [
+            "case",
+            ["get", "selected"],
+            VEHICLE_BODY_RADIUS_SELECTED,
+            VEHICLE_BODY_RADIUS,
+          ],
           "circle-color": [
             "match",
             ["get", "status"],
@@ -124,7 +176,12 @@ export function VehicleMarkers(): ReactElement | null {
             VEHICLE_STATUS_COLORS.EN_ROUTE,
             VEHICLE_STATUS_COLORS.FREE,
           ],
-          "circle-stroke-width": VEHICLE_BODY_STROKE_WIDTH,
+          "circle-stroke-width": [
+            "case",
+            ["get", "selected"],
+            VEHICLE_BODY_STROKE_WIDTH_SELECTED,
+            VEHICLE_BODY_STROKE_WIDTH,
+          ],
           "circle-stroke-color": MARKER_COLORS.STROKE,
         }}
       />
