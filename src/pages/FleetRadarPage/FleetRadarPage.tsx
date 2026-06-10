@@ -1,6 +1,7 @@
 import type { ReactElement } from "react";
 import { VEHICLE_STATUS } from "@shared/types";
 
+import { FilterPanel } from "@app/components/FilterPanel";
 import { FleetMap } from "@app/components/FleetMap";
 import { Legend } from "@app/components/Legend";
 import { VehicleDetails } from "@app/components/VehicleDetails";
@@ -68,6 +69,7 @@ export function FleetRadarPage(): ReactElement {
           <VehicleMarkers />
         </FleetMap>
         <Legend />
+        <FilterPanel />
         <VehicleDetails />
         <DebugPanel>
           <DebugRow>

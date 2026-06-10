@@ -1,8 +1,5 @@
-// Centralized color tokens. Semantic names, organized by role so callers
-// reach for the *meaning* (TopBar background) rather than the value (#1f2330).
-//
-// If a component needs a color, import it from here — no inline hex literals
-// or rgba() in styles.ts files or React inline styles.
+// Centralized color tokens. Semantic names, organized by role so callers reach for the *meaning* (TopBar background) rather than the value (#1f2330).
+// If a component needs a color, import it from here - no inline hex literals or rgba() in styles.ts files or React inline styles.
 
 export const SURFACE_COLORS = {
   TOP_BAR: "#1f2330",

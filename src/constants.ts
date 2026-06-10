@@ -28,3 +28,8 @@ export const CRITICAL_BATTERY_THRESHOLD = 10;
 // A vehicle is considered "stale" if we haven't received telemetry for it in this long.
 // Slightly more than 2 ticks to absorb a single dropped batch.
 export const STALE_THRESHOLD_MS = 2500;
+
+// Opacity applied to stale vehicle markers (body, stroke, arrow) and to the
+// matching legend swatch so the visual treatment is consistent in both places.
+export const STALE_MARKER_OPACITY = 0.4;
+export const NORMAL_MARKER_OPACITY = 1;

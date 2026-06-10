@@ -47,7 +47,7 @@ export const LegendRow = styled.div`
   }
 `;
 
-export const Swatch = styled.span<{ $color: string }>`
+export const Swatch = styled.span<{ $color: string; $opacity?: number }>`
   display: inline-block;
   width: ${LEGEND_SWATCH_SIZE_REM}rem;
   height: ${LEGEND_SWATCH_SIZE_REM}rem;
@@ -55,8 +55,15 @@ export const Swatch = styled.span<{ $color: string }>`
   background: ${({ $color }) => $color};
   border: ${LEGEND_SWATCH_STROKE_REM}rem solid ${MARKER_COLORS.STROKE};
   box-shadow: 0 0 0 ${LEGEND_SWATCH_STROKE_REM}rem ${SHADOW_COLORS.PANEL};
+  opacity: ${({ $opacity }) => $opacity ?? 1};
 `;
 
 export const LegendLabel = styled.span`
   color: ${TEXT_COLORS.BODY};
+`;
+
+export const LegendDivider = styled.div`
+  height: ${LEGEND_SWATCH_STROKE_REM}rem;
+  background: ${SHADOW_COLORS.PANEL};
+  margin: ${LEGEND_ROW_GAP_REM}rem 0;
 `;

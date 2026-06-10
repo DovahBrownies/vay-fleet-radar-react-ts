@@ -4,6 +4,7 @@
 import { create } from "zustand";
 
 import {
+  VEHICLE_STATUS,
   WS_MESSAGE_TYPE,
   type Route,
   type Vehicle,
@@ -40,7 +41,11 @@ interface FleetState {
 }
 
 const INITIAL_FILTERS: FleetFilters = {
-  statuses: new Set(),
+  statuses: new Set<VehicleStatus>([
+    VEHICLE_STATUS.FREE,
+    VEHICLE_STATUS.WITH_CUSTOMER,
+    VEHICLE_STATUS.EN_ROUTE,
+  ]),
   lowBatteryOnly: false,
   staleOnly: false,
 };
