@@ -180,9 +180,6 @@ The brief allows simulation. Running a broker would have eaten most of the four 
 ### In-memory storage
 Nothing is persisted to disk; both stores live in process memory and reset on restart. The brief allows this. The consumer is the only writer in either store, so swapping in a real database (Redis being the obvious choice for this shape of data) is a localized change to `consumer.ts` and the two store files.
 
-### Straight-line routes
-EN_ROUTE vehicles follow a straight line from A to B rather than real roads. The polyline type (`Route.polyline: LngLat[]`) already supports multi-waypoint routes, so upgrading later (via [OSRM](https://github.com/Project-OSRM/osrm.js) for real road-snapping, or pre-baked fixtures for offline use) is a single-function rewrite inside `simulator.ts`. The architecture doesn't change - it's only a visual upgrade - so I cut it to spend the time elsewhere.
-
 ### No unit tests
 The discriminated-union types catch the most common mistakes at compile time. As a runtime check, the server logs a heartbeat every 5 seconds with three counters - total vehicles in the store, count with `status === EN_ROUTE`, and total routes in the route store - which should always agree. If they ever disagree, something dropped an event. If I had more time I'd write proper tests for the event bus delivery, the consumer reducer for each event type, and the route-arrival logic in the simulator.
 
